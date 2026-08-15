@@ -97,7 +97,7 @@
       color: var(--text);
     }
 
-    /* 입력창 및 단위 결합 스타일 */
+    /* 입력창 및 단위 결합 */
     .input-unit-group {
       display: flex;
       align-items: center;
@@ -139,19 +139,6 @@
       flex-wrap: wrap;
       gap: 6px;
       margin-top: 6px;
-    }
-
-    /* 점적계수 버튼 3개 동일 크기 정렬 */
-    .preset-chips.equal-width {
-      display: flex;
-      gap: 6px;
-      width: 100%;
-    }
-
-    .preset-chips.equal-width .chip {
-      flex: 1;
-      text-align: center;
-      padding: 6px 0;
     }
 
     .chip {
@@ -227,7 +214,7 @@
       color: var(--text);
     }
 
-    /* 시각적 점적 시뮬레이터 */
+    /* 점적 시뮬레이터 */
     .drip-simulator {
       margin-top: 18px;
       display: flex;
@@ -268,20 +255,20 @@
   <!-- 탭 전환 -->
   <div class="tab-group">
     <button class="tab-btn active" onclick="switchTab('standard')">총량 & 시간 기준</button>
-    <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산 (Pump)</button>
+    <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산 </button>
   </div>
 
-  <!-- 공통: 점적계수 입력 (1번 사진 스타일로 크기 균등 분할) -->
+  <!-- 공통: 점적계수 입력 (15 -> 20 -> 60 순서 & 요청하신 깔끔한 문구) -->
   <div class="form-group">
-    <label for="dropFactorInput">수액세트 점적계수 (직접 수정 가능)</label>
+    <label for="dropFactorInput">수액세트 점적계수</label>
     <div class="input-unit-group">
       <input type="tel" inputmode="numeric" pattern="[0-9]*" id="dropFactorInput" value="20" min="1" step="1" oninput="calculate()" />
       <span class="unit-label">gtt/mL</span>
     </div>
-    <div class="preset-chips equal-width">
-      <button class="chip" onclick="setDropFactor(15)">15 gtt (혈액/일부)</button>
-      <button class="chip" onclick="setDropFactor(20)">20 gtt (표준 성인)</button>
-      <button class="chip" onclick="setDropFactor(60)">60 gtt (소아/Micro)</button>
+    <div class="preset-chips">
+      <button class="chip" onclick="setDropFactor(15)">15gtt (혈액)</button>
+      <button class="chip" onclick="setDropFactor(20)">20gtt (표준)</button>
+      <button class="chip" onclick="setDropFactor(60)">60gtt (소아)</button>
     </div>
   </div>
 
@@ -383,7 +370,7 @@
         <div class="data" id="mlPerMinResult">0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span></div>
       </div>
       
-      <!-- 예상 소요 시간 -->
+      <!-- 총 주입 예상 소요 시간 -->
       <div class="metric-item full-width">
         <div class="title">총 주입 예상 소요 시간</div>
         <div class="data" id="totalDurationResult">-</div>
