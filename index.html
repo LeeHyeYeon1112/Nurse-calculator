@@ -12,7 +12,7 @@
       --card-bg: #ffffff;
       --text: #1e293b;
       --text-muted: #64748b;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --accent: #0284c7;
     }
 
@@ -48,7 +48,7 @@
       margin-bottom: 16px;
     }
 
-    /* 탭 메뉴 스타일 */
+    /* 탭 메뉴 */
     .tab-group {
       display: flex;
       background: #f1f5f9;
@@ -97,14 +97,17 @@
       color: var(--text);
     }
 
-    .input-row {
+    /* 입력창 및 단위 결합 스타일 */
+    .input-unit-group {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      position: relative;
+      width: 100%;
     }
 
-    input, select {
+    .input-unit-group input {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px 42px 10px 12px;
       font-size: 1rem;
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -112,8 +115,41 @@
       transition: border-color 0.2s;
     }
 
-    input:focus, select:focus {
+    .input-unit-group input:focus, select:focus {
       border-color: var(--primary);
+    }
+
+    .input-unit-group .unit-label {
+      position: absolute;
+      right: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      font-weight: 600;
+    }
+
+    .time-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background-color: #ffffff;
+    }
+
+    .custom-factor-box {
+      margin-top: 8px;
+      display: none;
+    }
+
+    .custom-factor-box.active {
+      display: block;
     }
 
     .preset-chips {
@@ -126,7 +162,7 @@
     .chip {
       background: #f1f5f9;
       border: 1px solid var(--border);
-      padding: 4px 8px;
+      padding: 5px 9px;
       font-size: 0.78rem;
       border-radius: 6px;
       cursor: pointer;
@@ -176,6 +212,10 @@
       padding: 10px 12px;
       border-radius: 8px;
       border: 1px solid #e0f2fe;
+    }
+
+    .metric-item.full-width {
+      grid-column: span 2;
     }
 
     .metric-item .title {
@@ -234,22 +274,34 @@
     <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산 (Pump)</button>
   </div>
 
-  <!-- 공통: 점적계수 선택 -->
+  <!-- 공통: 점적계수 선택 & 직접 입력 -->
   <div class="form-group">
-    <label for="dropFactor">수액세트 점적계수 (gtt/mL)</label>
-    <select id="dropFactor" onchange="calculate()">
-      <option value="15">15 gtt/mL (혈액/일부 수액세트)</option>
+    <label for="dropFactorSelect">수액세트 점적계수 (gtt/mL)</label>
+    <select id="dropFactorSelect" onchange="onDropFactorPresetChange()">
       <option value="20" selected>20 gtt/mL (일반 표준 수액세트)</option>
+      <option value="15">15 gtt/mL (혈액/일부 수액세트)</option>
       <option value="60">60 gtt/mL (소아/Micro drip)</option>
+      <option value="custom">직접 입력 (사용자 설정)</option>
     </select>
+    
+    <div id="customFactorBox" class="custom-factor-box">
+      <div class="input-unit-group">
+        <input type="number" id="customDropFactor" placeholder="점적계수 입력" value="20" min="1" step="1" oninput="calculate()" />
+        <span class="unit-label">gtt/mL</span>
+      </div>
+    </div>
   </div>
 
   <!-- TAB 1: 총량 & 시간 기준 계산 -->
   <div id="standardTab" class="tab-content active">
     <div class="form-group">
-      <label for="volume">총 주입량 (mL 또는 cc)</label>
-      <input type="number" id="volume" value="500" min="1" step="1" oninput="calculate()" />
+      <label for="volume">총 주입량</label>
+      <div class="input-unit-group">
+        <input type="number" id="volume" value="500" min="1" step="1" oninput="calculate()" />
+        <span class="unit-label">mL</span>
+      </div>
       <div class="preset-chips">
+        <button class="chip" onclick="setVolume(50)">50mL</button>
         <button class="chip" onclick="setVolume(100)">100mL</button>
         <button class="chip" onclick="setVolume(500)">500mL</button>
         <button class="chip" onclick="setVolume(1000)">1000mL</button>
@@ -258,13 +310,20 @@
 
     <div class="form-group">
       <label>주입 예정 시간</label>
-      <div class="input-row">
-        <input type="number" id="hours" value="4" min="0" placeholder="시간" oninput="calculate()" />
-        <input type="number" id="minutes" value="0" min="0" max="59" placeholder="분" oninput="calculate()" />
+      <div class="time-row">
+        <div class="input-unit-group">
+          <input type="number" id="hours" value="4" min="0" placeholder="시간" oninput="calculate()" />
+          <span class="unit-label">시간</span>
+        </div>
+        <div class="input-unit-group">
+          <input type="number" id="minutes" value="0" min="0" max="59" placeholder="분" oninput="calculate()" />
+          <span class="unit-label">분</span>
+        </div>
       </div>
       <div class="preset-chips">
         <button class="chip" onclick="setTime(0, 30)">30분</button>
         <button class="chip" onclick="setTime(1, 0)">1시간</button>
+        <button class="chip" onclick="setTime(2, 0)">2시간</button>
         <button class="chip" onclick="setTime(4, 0)">4시간</button>
         <button class="chip" onclick="setTime(8, 0)">8시간</button>
         <button class="chip" onclick="setTime(24, 0)">24시간</button>
@@ -275,17 +334,33 @@
   <!-- TAB 2: cc/hr 역계산 모드 -->
   <div id="rateTab" class="tab-content">
     <div class="form-group">
-      <label for="ccPerHour">시간당 주입 속도 (cc/hr 또는 mL/hr)</label>
-      <input type="number" id="ccPerHour" value="30" min="1" step="1" oninput="calculate()" />
+      <label for="ccPerHour">시간당 주입 속도</label>
+      <div class="input-unit-group">
+        <input type="number" id="ccPerHour" value="30" min="1" step="1" oninput="calculate()" />
+        <span class="unit-label">cc/hr</span>
+      </div>
       <div class="preset-chips">
-        <button class="chip" onclick="setRate(10)">10 cc/hr</button>
-        <button class="chip" onclick="setRate(20)">20 cc/hr</button>
-        <button class="chip" onclick="setRate(30)">30 cc/hr</button>
-        <button class="chip" onclick="setRate(40)">40 cc/hr</button>
-        <button class="chip" onclick="setRate(60)">60 cc/hr</button>
-        <button class="chip" onclick="setRate(80)">80 cc/hr</button>
-        <button class="chip" onclick="setRate(100)">100 cc/hr</button>
-        <button class="chip" onclick="setRate(125)">125 cc/hr</button>
+        <button class="chip" onclick="setRate(10)">10</button>
+        <button class="chip" onclick="setRate(20)">20</button>
+        <button class="chip" onclick="setRate(30)">30</button>
+        <button class="chip" onclick="setRate(40)">40</button>
+        <button class="chip" onclick="setRate(60)">60</button>
+        <button class="chip" onclick="setRate(80)">80</button>
+        <button class="chip" onclick="setRate(100)">100</button>
+        <button class="chip" onclick="setRate(125)">125</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="targetVolume">수액 총량 (예상 완료 시간 계산용)</label>
+      <div class="input-unit-group">
+        <input type="number" id="targetVolume" value="500" min="1" step="1" oninput="calculate()" />
+        <span class="unit-label">mL</span>
+      </div>
+      <div class="preset-chips">
+        <button class="chip" onclick="setTargetVolume(100)">100mL</button>
+        <button class="chip" onclick="setTargetVolume(500)">500mL</button>
+        <button class="chip" onclick="setTargetVolume(1000)">1000mL</button>
       </div>
     </div>
   </div>
@@ -311,8 +386,14 @@
         <div class="data" id="dropsPerSecResult">0 <span style="font-size:0.85rem; font-weight:500;">방울/초</span></div>
       </div>
       <div class="metric-item">
-        <div class="title">분당 주입 부피</div>
+        <div class="title">분당 주입량</div>
         <div class="data" id="mlPerMinResult">0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span></div>
+      </div>
+      
+      <!-- 예상 소요 시간 (시간 / 분 명확 표기) -->
+      <div class="metric-item full-width">
+        <div class="title">총 주입 예상 소요 시간</div>
+        <div class="data" id="totalDurationResult">-</div>
       </div>
     </div>
 
@@ -340,17 +421,38 @@
     calculate();
   }
 
+  function onDropFactorPresetChange() {
+    const select = document.getElementById('dropFactorSelect');
+    const customBox = document.getElementById('customFactorBox');
+    
+    if (select.value === 'custom') {
+      customBox.classList.add('active');
+    } else {
+      customBox.classList.remove('active');
+    }
+    calculate();
+  }
+
+  function getDropFactor() {
+    const select = document.getElementById('dropFactorSelect');
+    if (select.value === 'custom') {
+      return parseFloat(document.getElementById('customDropFactor').value) || 20;
+    }
+    return parseFloat(select.value) || 20;
+  }
+
   function calculate() {
-    const dropFactor = parseFloat(document.getElementById('dropFactor').value) || 20;
+    const dropFactor = getDropFactor();
     let gtt = 0;
     let ccPerHour = 0;
     let mlPerMin = 0;
+    let totalMinutes = 0;
 
     if (activeTab === 'standard') {
       const volume = parseFloat(document.getElementById('volume').value) || 0;
       const hours = parseFloat(document.getElementById('hours').value) || 0;
       const minutes = parseFloat(document.getElementById('minutes').value) || 0;
-      const totalMinutes = (hours * 60) + minutes;
+      totalMinutes = (hours * 60) + minutes;
 
       if (volume > 0 && totalMinutes > 0) {
         gtt = (volume * dropFactor) / totalMinutes;
@@ -360,10 +462,14 @@
     } else {
       // cc/hr 역계산 모드
       ccPerHour = parseFloat(document.getElementById('ccPerHour').value) || 0;
+      const targetVolume = parseFloat(document.getElementById('targetVolume').value) || 0;
+
       if (ccPerHour > 0) {
-        // gtt = (cc/hr * dropFactor) / 60
         gtt = (ccPerHour * dropFactor) / 60;
         mlPerMin = ccPerHour / 60;
+        if (targetVolume > 0) {
+          totalMinutes = (targetVolume / ccPerHour) * 60;
+        }
       }
     }
 
@@ -373,6 +479,7 @@
       document.getElementById('secPerDropResult').innerHTML = `- <span style="font-size:0.85rem; font-weight:500;">초에 1방울</span>`;
       document.getElementById('dropsPerSecResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">방울/초</span>`;
       document.getElementById('mlPerMinResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span>`;
+      document.getElementById('totalDurationResult').innerText = `-`;
       document.getElementById('dripStatus').innerText = "수치를 입력해주세요";
       clearInterval(dripIntervalTimer);
       return;
@@ -381,13 +488,22 @@
     const secPerDrop = 60 / gtt;
     const dropsPerSec = gtt / 60;
 
+    // 시간, 분 변환
+    const resHours = Math.floor(totalMinutes / 60);
+    const resMinutes = Math.round(totalMinutes % 60);
+    let durationString = "";
+    if (resHours > 0) durationString += `${resHours}시간 `;
+    if (resMinutes > 0 || resHours === 0) durationString += `${resMinutes}분`;
+    durationString += ` (총 ${Math.round(totalMinutes)}분)`;
+
     document.getElementById('gttResult').innerHTML = `${gtt.toFixed(1)} <span style="font-size:1.1rem; font-weight:600;">gtt/min</span>`;
     document.getElementById('flowRateResult').innerHTML = `${ccPerHour.toFixed(1)} <span style="font-size:0.85rem; font-weight:500;">cc/hr</span>`;
     document.getElementById('secPerDropResult').innerHTML = `${secPerDrop.toFixed(2)} <span style="font-size:0.85rem; font-weight:500;">초에 1방울</span>`;
     document.getElementById('dropsPerSecResult').innerHTML = `${dropsPerSec.toFixed(2)} <span style="font-size:0.85rem; font-weight:500;">방울/초</span>`;
     document.getElementById('mlPerMinResult').innerHTML = `${mlPerMin.toFixed(2)} <span style="font-size:0.85rem; font-weight:500;">mL/min</span>`;
+    document.getElementById('totalDurationResult').innerText = durationString;
 
-    document.getElementById('dripStatus').innerText = `${secPerDrop.toFixed(1)}초마다 1방울 점적 중`;
+    document.getElementById('dripStatus').innerText = `${secPerDrop.toFixed(1)}초마다 1방울 점적 중 (${dropFactor}gtt/mL 기준)`;
 
     startDripAnimation(secPerDrop * 1000);
   }
@@ -419,7 +535,12 @@
     calculate();
   }
 
-  // 첫 화면 실행
+  function setTargetVolume(v) {
+    document.getElementById('targetVolume').value = v;
+    calculate();
+  }
+
+  // 초기 실행
   calculate();
 </script>
 
