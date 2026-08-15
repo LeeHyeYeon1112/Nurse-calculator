@@ -107,15 +107,16 @@
 
     .input-unit-group input {
       width: 100%;
-      padding: 10px 42px 10px 12px;
+      padding: 10px 56px 10px 12px;
       font-size: 1rem;
       border: 1px solid var(--border);
       border-radius: 8px;
       outline: none;
       transition: border-color 0.2s;
+      background: #ffffff;
     }
 
-    .input-unit-group input:focus, select:focus {
+    .input-unit-group input:focus {
       border-color: var(--primary);
     }
 
@@ -133,25 +134,6 @@
       gap: 8px;
     }
 
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      font-size: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      outline: none;
-      background-color: #ffffff;
-    }
-
-    .custom-factor-box {
-      margin-top: 8px;
-      display: none;
-    }
-
-    .custom-factor-box.active {
-      display: block;
-    }
-
     .preset-chips {
       display: flex;
       flex-wrap: wrap;
@@ -167,10 +149,12 @@
       border-radius: 6px;
       cursor: pointer;
       color: var(--text-muted);
+      transition: all 0.15s;
     }
 
     .chip:hover {
       background: #e2e8f0;
+      color: var(--text);
     }
 
     .results-card {
@@ -274,21 +258,17 @@
     <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산 (Pump)</button>
   </div>
 
-  <!-- 공통: 점적계수 선택 & 직접 입력 -->
+  <!-- 공통: 점적계수 입력 (기본값 20 + 프리셋 버튼) -->
   <div class="form-group">
-    <label for="dropFactorSelect">수액세트 점적계수 (gtt/mL)</label>
-    <select id="dropFactorSelect" onchange="onDropFactorPresetChange()">
-      <option value="20" selected>20 gtt/mL (일반 표준 수액세트)</option>
-      <option value="15">15 gtt/mL (혈액/일부 수액세트)</option>
-      <option value="60">60 gtt/mL (소아/Micro drip)</option>
-      <option value="custom">직접 입력 (사용자 설정)</option>
-    </select>
-    
-    <div id="customFactorBox" class="custom-factor-box">
-      <div class="input-unit-group">
-        <input type="number" id="customDropFactor" placeholder="점적계수 입력" value="20" min="1" step="1" oninput="calculate()" />
-        <span class="unit-label">gtt/mL</span>
-      </div>
+    <label for="dropFactorInput">수액세트 점적계수 (직접 수정 가능)</label>
+    <div class="input-unit-group">
+      <input type="number" id="dropFactorInput" value="20" min="1" step="1" oninput="calculate()" />
+      <span class="unit-label">gtt/mL</span>
+    </div>
+    <div class="preset-chips">
+      <button class="chip" onclick="setDropFactor(20)">20 gtt (표준 성인)</button>
+      <button class="chip" onclick="setDropFactor(15)">15 gtt (혈액/일부)</button>
+      <button class="chip" onclick="setDropFactor(60)">60 gtt (소아/Micro)</button>
     </div>
   </div>
 
@@ -390,7 +370,7 @@
         <div class="data" id="mlPerMinResult">0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span></div>
       </div>
       
-      <!-- 예상 소요 시간 (시간 / 분 명확 표기) -->
+      <!-- 예상 소요 시간 -->
       <div class="metric-item full-width">
         <div class="title">총 주입 예상 소요 시간</div>
         <div class="data" id="totalDurationResult">-</div>
@@ -421,28 +401,13 @@
     calculate();
   }
 
-  function onDropFactorPresetChange() {
-    const select = document.getElementById('dropFactorSelect');
-    const customBox = document.getElementById('customFactorBox');
-    
-    if (select.value === 'custom') {
-      customBox.classList.add('active');
-    } else {
-      customBox.classList.remove('active');
-    }
+  function setDropFactor(df) {
+    document.getElementById('dropFactorInput').value = df;
     calculate();
   }
 
-  function getDropFactor() {
-    const select = document.getElementById('dropFactorSelect');
-    if (select.value === 'custom') {
-      return parseFloat(document.getElementById('customDropFactor').value) || 20;
-    }
-    return parseFloat(select.value) || 20;
-  }
-
   function calculate() {
-    const dropFactor = getDropFactor();
+    const dropFactor = parseFloat(document.getElementById('dropFactorInput').value) || 20;
     let gtt = 0;
     let ccPerHour = 0;
     let mlPerMin = 0;
@@ -480,7 +445,7 @@
       document.getElementById('dropsPerSecResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">방울/초</span>`;
       document.getElementById('mlPerMinResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span>`;
       document.getElementById('totalDurationResult').innerText = `-`;
-      document.getElementById('dripStatus').innerText = "수치를 입력해주세요";
+      document.getElementById('dripStatus').innerText = "수치를 올바르게 입력해주세요";
       clearInterval(dripIntervalTimer);
       return;
     }
@@ -488,7 +453,7 @@
     const secPerDrop = 60 / gtt;
     const dropsPerSec = gtt / 60;
 
-    // 시간, 분 변환
+    // 시간, 분 계산
     const resHours = Math.floor(totalMinutes / 60);
     const resMinutes = Math.round(totalMinutes % 60);
     let durationString = "";
