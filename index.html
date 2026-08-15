@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>간호사용 수액 속도 & gtt 계산기</title>
+  <title>수액 속도 & gtt 계산기</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -141,6 +141,19 @@
       margin-top: 6px;
     }
 
+    /* 점적계수 버튼 3개 동일 크기 정렬 */
+    .preset-chips.equal-width {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .preset-chips.equal-width .chip {
+      flex: 1;
+      text-align: center;
+      padding: 6px 0;
+    }
+
     .chip {
       background: #f1f5f9;
       border: 1px solid var(--border);
@@ -258,17 +271,17 @@
     <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산 (Pump)</button>
   </div>
 
-  <!-- 공통: 점적계수 입력 (15 -> 20 -> 60 순서 & 숫자패드) -->
+  <!-- 공통: 점적계수 입력 (1번 사진 스타일로 크기 균등 분할) -->
   <div class="form-group">
     <label for="dropFactorInput">수액세트 점적계수 (직접 수정 가능)</label>
     <div class="input-unit-group">
       <input type="tel" inputmode="numeric" pattern="[0-9]*" id="dropFactorInput" value="20" min="1" step="1" oninput="calculate()" />
       <span class="unit-label">gtt/mL</span>
     </div>
-    <div class="preset-chips">
-      <button class="chip" onclick="setDropFactor(15)">15 gtt (혈액)</button>
-      <button class="chip" onclick="setDropFactor(20)">20 gtt (표준)</button>
-      <button class="chip" onclick="setDropFactor(60)">60 gtt (소아)</button>
+    <div class="preset-chips equal-width">
+      <button class="chip" onclick="setDropFactor(15)">15 gtt (혈액/일부)</button>
+      <button class="chip" onclick="setDropFactor(20)">20 gtt (표준 성인)</button>
+      <button class="chip" onclick="setDropFactor(60)">60 gtt (소아/Micro)</button>
     </div>
   </div>
 
