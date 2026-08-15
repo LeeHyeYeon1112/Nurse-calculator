@@ -2,18 +2,15 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="theme-color" content="#2563eb" />
-  <title>수액 속도 & gtt 계산기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>간호사용 수액 속도 & gtt 계산기</title>
   <style>
     :root {
       --primary: #2563eb;
       --primary-dark: #1d4ed8;
-      --bg: #f1f5f9;
+      --bg: #f8fafc;
       --card-bg: #ffffff;
-      --text: #0f172a;
+      --text: #1e293b;
       --text-muted: #64748b;
       --border: #cbd5e1;
       --accent: #0284c7;
@@ -23,8 +20,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
     body {
@@ -32,37 +28,33 @@
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 12px 10px;
+      padding: 20px 12px;
     }
 
     .container {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-      padding: 18px 16px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 24px 20px;
     }
 
-    .app-header {
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
       text-align: center;
-      margin-bottom: 14px;
-    }
-
-    .app-header h1 {
-      font-size: 1.25rem;
-      font-weight: 800;
       color: var(--primary-dark);
-      letter-spacing: -0.5px;
+      margin-bottom: 16px;
     }
 
-    /* 상단 탭 버튼 */
+    /* 탭 메뉴 */
     .tab-group {
       display: flex;
-      background: #e2e8f0;
-      padding: 3px;
-      border-radius: 12px;
-      margin-bottom: 16px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 20px;
       gap: 4px;
     }
 
@@ -70,19 +62,19 @@
       flex: 1;
       border: none;
       background: transparent;
-      padding: 9px 0;
+      padding: 10px;
       font-size: 0.88rem;
-      font-weight: 700;
-      color: #64748b;
-      border-radius: 9px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
 
     .tab-btn.active {
       background: #ffffff;
       color: var(--primary);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
     }
 
     .tab-content {
@@ -94,18 +86,18 @@
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
-      font-size: 0.84rem;
-      font-weight: 700;
-      margin-bottom: 5px;
-      color: #334155;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
     }
 
-    /* 입력창 + 단위 */
+    /* 입력창 및 단위 결합 스타일 */
     .input-unit-group {
       display: flex;
       align-items: center;
@@ -115,15 +107,13 @@
 
     .input-unit-group input {
       width: 100%;
-      height: 44px;
-      padding: 0 52px 0 12px;
-      font-size: 1.05rem;
-      font-weight: 600;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
+      padding: 10px 56px 10px 12px;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       outline: none;
+      transition: border-color 0.2s;
       background: #ffffff;
-      color: #1e293b;
     }
 
     .input-unit-group input:focus {
@@ -136,7 +126,7 @@
       font-size: 0.85rem;
       color: var(--text-muted);
       pointer-events: none;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .time-row {
@@ -144,70 +134,67 @@
       gap: 8px;
     }
 
-    /* 빠른 선택 칩 버튼 */
     .preset-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 6px;
       margin-top: 6px;
     }
 
     .chip {
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
-      padding: 6px 10px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 5px 9px;
       font-size: 0.78rem;
-      font-weight: 600;
-      border-radius: 7px;
+      border-radius: 6px;
       cursor: pointer;
-      color: #475569;
+      color: var(--text-muted);
+      transition: all 0.15s;
     }
 
-    .chip:active {
+    .chip:hover {
       background: #e2e8f0;
-      transform: scale(0.96);
+      color: var(--text);
     }
 
-    /* 결과 영역 */
     .results-card {
-      margin-top: 18px;
+      margin-top: 24px;
       background: #f0f9ff;
-      border: 1.5px solid #bae6fd;
-      border-radius: 14px;
-      padding: 16px 14px;
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      padding: 18px;
     }
 
     .main-metric {
       text-align: center;
-      padding-bottom: 12px;
-      border-bottom: 1.5px dashed #7dd3fc;
-      margin-bottom: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed #7dd3fc;
+      margin-bottom: 14px;
     }
 
     .main-metric .label {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--accent);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .main-metric .value {
-      font-size: 2.25rem;
-      font-weight: 900;
+      font-size: 2.2rem;
+      font-weight: 800;
       color: #0369a1;
-      line-height: 1.1;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .grid-metrics {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 12px;
     }
 
     .metric-item {
       background: #ffffff;
-      padding: 9px 10px;
-      border-radius: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
       border: 1px solid #e0f2fe;
     }
 
@@ -216,37 +203,36 @@
     }
 
     .metric-item .title {
-      font-size: 0.74rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .metric-item .data {
-      font-size: 1.08rem;
-      font-weight: 800;
+      font-size: 1.15rem;
+      font-weight: 700;
       color: var(--text);
     }
 
     /* 시각적 점적 시뮬레이터 */
     .drip-simulator {
-      margin-top: 14px;
+      margin-top: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       background: #ffffff;
-      padding: 10px;
-      border-radius: 10px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid #e2e8f0;
     }
 
     .drip-dot {
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       background-color: #cbd5e1;
       border-radius: 50%;
-      transition: background-color 0.08s;
+      transition: background-color 0.1s;
     }
 
     .drip-dot.active {
@@ -255,8 +241,8 @@
     }
 
     .drip-text {
-      font-size: 0.82rem;
-      font-weight: 700;
+      font-size: 0.85rem;
+      font-weight: 600;
       color: #475569;
     }
   </style>
@@ -264,31 +250,29 @@
 <body>
 
 <div class="container">
-  <div class="app-header">
-    <h1>💉 수액 속도 계산기</h1>
-  </div>
+  <h1>💉 수액 속도 & gtt 계산기</h1>
 
   <!-- 탭 전환 -->
   <div class="tab-group">
-    <button class="tab-btn active" onclick="switchTab('standard')">총량 & 시간</button>
-    <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산</button>
+    <button class="tab-btn active" onclick="switchTab('standard')">총량 & 시간 기준</button>
+    <button class="tab-btn" onclick="switchTab('rate')">cc/hr 역계산 (Pump)</button>
   </div>
 
-  <!-- 공통: 점적계수 (15 -> 20 -> 60 순서 배치 & 숫자패드 지원) -->
+  <!-- 공통: 점적계수 입력 (15 -> 20 -> 60 순서 & 숫자패드) -->
   <div class="form-group">
-    <label for="dropFactorInput">수액세트 규격 (점적계수)</label>
+    <label for="dropFactorInput">수액세트 점적계수 (직접 수정 가능)</label>
     <div class="input-unit-group">
       <input type="tel" inputmode="numeric" pattern="[0-9]*" id="dropFactorInput" value="20" min="1" step="1" oninput="calculate()" />
       <span class="unit-label">gtt/mL</span>
     </div>
     <div class="preset-chips">
-      <button class="chip" onclick="setDropFactor(15)">15gtt (혈액)</button>
-      <button class="chip" onclick="setDropFactor(20)">20gtt (표준)</button>
-      <button class="chip" onclick="setDropFactor(60)">60gtt (소아)</button>
+      <button class="chip" onclick="setDropFactor(15)">15 gtt (혈액)</button>
+      <button class="chip" onclick="setDropFactor(20)">20 gtt (표준)</button>
+      <button class="chip" onclick="setDropFactor(60)">60 gtt (소아)</button>
     </div>
   </div>
 
-  <!-- TAB 1: 총량 & 시간 -->
+  <!-- TAB 1: 총량 & 시간 기준 계산 -->
   <div id="standardTab" class="tab-content active">
     <div class="form-group">
       <label for="volume">총 주입량</label>
@@ -308,11 +292,11 @@
       <label>주입 예정 시간</label>
       <div class="time-row">
         <div class="input-unit-group">
-          <input type="tel" inputmode="numeric" pattern="[0-9]*" id="hours" value="4" min="0" placeholder="0" oninput="calculate()" />
+          <input type="tel" inputmode="numeric" pattern="[0-9]*" id="hours" value="4" min="0" placeholder="시간" oninput="calculate()" />
           <span class="unit-label">시간</span>
         </div>
         <div class="input-unit-group">
-          <input type="tel" inputmode="numeric" pattern="[0-9]*" id="minutes" value="0" min="0" max="59" placeholder="0" oninput="calculate()" />
+          <input type="tel" inputmode="numeric" pattern="[0-9]*" id="minutes" value="0" min="0" max="59" placeholder="분" oninput="calculate()" />
           <span class="unit-label">분</span>
         </div>
       </div>
@@ -327,10 +311,10 @@
     </div>
   </div>
 
-  <!-- TAB 2: cc/hr 역계산 -->
+  <!-- TAB 2: cc/hr 역계산 모드 -->
   <div id="rateTab" class="tab-content">
     <div class="form-group">
-      <label for="ccPerHour">주입 속도</label>
+      <label for="ccPerHour">시간당 주입 속도</label>
       <div class="input-unit-group">
         <input type="tel" inputmode="numeric" pattern="[0-9]*" id="ccPerHour" value="30" min="1" step="1" oninput="calculate()" />
         <span class="unit-label">cc/hr</span>
@@ -364,34 +348,36 @@
   <!-- 결과 카드 -->
   <div class="results-card">
     <div class="main-metric">
-      <div class="label">분당 점적수</div>
-      <div class="value" id="gttResult">0 <span style="font-size:1.1rem; font-weight:700;">gtt</span></div>
+      <div class="label">분당 방울 수 (Drip Rate)</div>
+      <div class="value" id="gttResult">0 <span style="font-size:1.1rem; font-weight:600;">gtt/min</span></div>
     </div>
 
     <div class="grid-metrics">
       <div class="metric-item">
-        <div class="title">방울 간격</div>
-        <div class="data" id="secPerDropResult">0 <span style="font-size:0.8rem; font-weight:600;">초/방울</span></div>
+        <div class="title">시간당 주입량 (Flow Rate)</div>
+        <div class="data" id="flowRateResult">0 <span style="font-size:0.85rem; font-weight:500;">cc/hr</span></div>
       </div>
       <div class="metric-item">
-        <div class="title">주입 속도</div>
-        <div class="data" id="flowRateResult">0 <span style="font-size:0.8rem; font-weight:600;">cc/hr</span></div>
+        <div class="title">방울 간격 (Drop Interval)</div>
+        <div class="data" id="secPerDropResult">0 <span style="font-size:0.85rem; font-weight:500;">초에 1방울</span></div>
       </div>
       <div class="metric-item">
-        <div class="title">초당 방울수</div>
-        <div class="data" id="dropsPerSecResult">0 <span style="font-size:0.8rem; font-weight:600;">방울/초</span></div>
+        <div class="title">초당 방울 수</div>
+        <div class="data" id="dropsPerSecResult">0 <span style="font-size:0.85rem; font-weight:500;">방울/초</span></div>
       </div>
       <div class="metric-item">
         <div class="title">분당 주입량</div>
-        <div class="data" id="mlPerMinResult">0 <span style="font-size:0.8rem; font-weight:600;">mL/min</span></div>
+        <div class="data" id="mlPerMinResult">0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span></div>
       </div>
+      
+      <!-- 예상 소요 시간 -->
       <div class="metric-item full-width">
-        <div class="title">총 예상 소요 시간</div>
+        <div class="title">총 주입 예상 소요 시간</div>
         <div class="data" id="totalDurationResult">-</div>
       </div>
     </div>
 
-    <!-- 점적 템포 시뮬레이터 -->
+    <!-- 점적 시뮬레이터 -->
     <div class="drip-simulator">
       <div class="drip-dot" id="dripDot"></div>
       <div class="drip-text" id="dripStatus">템포 측정 중...</div>
@@ -439,6 +425,7 @@
         mlPerMin = volume / totalMinutes;
       }
     } else {
+      // cc/hr 역계산 모드
       ccPerHour = parseFloat(document.getElementById('ccPerHour').value) || 0;
       const targetVolume = parseFloat(document.getElementById('targetVolume').value) || 0;
 
@@ -452,13 +439,13 @@
     }
 
     if (gtt <= 0) {
-      document.getElementById('gttResult').innerHTML = `0 <span style="font-size:1.1rem; font-weight:700;">gtt</span>`;
-      document.getElementById('flowRateResult').innerHTML = `0 <span style="font-size:0.8rem; font-weight:600;">cc/hr</span>`;
-      document.getElementById('secPerDropResult').innerHTML = `- <span style="font-size:0.8rem; font-weight:600;">초/방울</span>`;
-      document.getElementById('dropsPerSecResult').innerHTML = `0 <span style="font-size:0.8rem; font-weight:600;">방울/초</span>`;
-      document.getElementById('mlPerMinResult').innerHTML = `0 <span style="font-size:0.8rem; font-weight:600;">mL/min</span>`;
+      document.getElementById('gttResult').innerHTML = `0 <span style="font-size:1.1rem; font-weight:600;">gtt/min</span>`;
+      document.getElementById('flowRateResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">cc/hr</span>`;
+      document.getElementById('secPerDropResult').innerHTML = `- <span style="font-size:0.85rem; font-weight:500;">초에 1방울</span>`;
+      document.getElementById('dropsPerSecResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">방울/초</span>`;
+      document.getElementById('mlPerMinResult').innerHTML = `0 <span style="font-size:0.85rem; font-weight:500;">mL/min</span>`;
       document.getElementById('totalDurationResult').innerText = `-`;
-      document.getElementById('dripStatus').innerText = "수치를 입력해주세요";
+      document.getElementById('dripStatus').innerText = "수치를 올바르게 입력해주세요";
       clearInterval(dripIntervalTimer);
       return;
     }
@@ -466,6 +453,7 @@
     const secPerDrop = 60 / gtt;
     const dropsPerSec = gtt / 60;
 
+    // 시간, 분 계산
     const resHours = Math.floor(totalMinutes / 60);
     const resMinutes = Math.round(totalMinutes % 60);
     let durationString = "";
@@ -473,14 +461,14 @@
     if (resMinutes > 0 || resHours === 0) durationString += `${resMinutes}분`;
     durationString += ` (총 ${Math.round(totalMinutes)}분)`;
 
-    document.getElementById('gttResult').innerHTML = `${gtt.toFixed(1)} <span style="font-size:1.1rem; font-weight:700;">gtt</span>`;
-    document.getElementById('flowRateResult').innerHTML = `${ccPerHour.toFixed(1)} <span style="font-size:0.8rem; font-weight:600;">cc/hr</span>`;
-    document.getElementById('secPerDropResult').innerHTML = `${secPerDrop.toFixed(2)} <span style="font-size:0.8rem; font-weight:600;">초에 1방울</span>`;
-    document.getElementById('dropsPerSecResult').innerHTML = `${dropsPerSec.toFixed(2)} <span style="font-size:0.8rem; font-weight:600;">방울/초</span>`;
-    document.getElementById('mlPerMinResult').innerHTML = `${mlPerMin.toFixed(2)} <span style="font-size:0.8rem; font-weight:600;">mL/min</span>`;
+    document.getElementById('gttResult').innerHTML = `${gtt.toFixed(1)} <span style="font-size:1.1rem; font-weight:600;">gtt/min</span>`;
+    document.getElementById('flowRateResult').innerHTML = `${ccPerHour.toFixed(1)} <span style="font-size:0.85rem; font-weight:500;">cc/hr</span>`;
+    document.getElementById('secPerDropResult').innerHTML = `${secPerDrop.toFixed(2)} <span style="font-size:0.85rem; font-weight:500;">초에 1방울</span>`;
+    document.getElementById('dropsPerSecResult').innerHTML = `${dropsPerSec.toFixed(2)} <span style="font-size:0.85rem; font-weight:500;">방울/초</span>`;
+    document.getElementById('mlPerMinResult').innerHTML = `${mlPerMin.toFixed(2)} <span style="font-size:0.85rem; font-weight:500;">mL/min</span>`;
     document.getElementById('totalDurationResult').innerText = durationString;
 
-    document.getElementById('dripStatus').innerText = `${secPerDrop.toFixed(1)}초마다 1방울 (${dropFactor}gtt/mL)`;
+    document.getElementById('dripStatus').innerText = `${secPerDrop.toFixed(1)}초마다 1방울 점적 중 (${dropFactor}gtt/mL 기준)`;
 
     startDripAnimation(secPerDrop * 1000);
   }
